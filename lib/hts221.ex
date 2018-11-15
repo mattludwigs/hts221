@@ -62,6 +62,10 @@ defmodule HTS221 do
     GenServer.call(hts221, {:write_register, register, data})
   end
 
+  @doc """
+  Close the connection to the sensor and shutdown the process
+  """
+  @spec close(t) :: :ok
   def close(hts221) do
     GenServer.stop(hts221)
   end

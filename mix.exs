@@ -9,7 +9,8 @@ defmodule HTS221.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: [extras: ["README.md"], main: "readme"],
-      package: package()
+      package: package(),
+      description: description()
     ]
   end
 
@@ -35,5 +36,9 @@ defmodule HTS221.MixProject do
       licenses: ["Apache-2.0"],
       links: %{"GitHub" => "https://github.com/mattludwigs/hts221"}
     ]
+  end
+
+  defp description() do
+    "An Elixir library for working with the HTS221 sensor"
   end
 end
