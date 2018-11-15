@@ -60,43 +60,43 @@ defmodule HTS221 do
         {:temperature, opts},
         _from,
         %{
-          t0_msb: t0_msb,
-          t0_out: t0_out,
-          t1_out: t1_out,
-          t1_msb: t1_msb,
-          t0_degc_x8: t0_degc_x8,
-          t1_degc_x8: t1_degc_x8,
-          bus: bus
+          bus: bus,
+          calibration:
+            %Calibration{
+              t0_out: t0_out,
+              t1_out: t1_out,
+            } = calibration
         } = state
       ) do
     {:ok, <<t::signed-integer-little-size(2)-unit(8)>>} =
       I2C.write_read(bus, 0x5F, <<0x2A ||| 0x80>>, 2)
 
-    t0 = ((t0_msb <<< 8) + t0_degc_x8) / 8
-    t1 = ((t1_msb <<< 8) + t1_degc_x8) / 8
+    t0 = Calibration.t0(calibration)
+    t1 = Calibration.t1(calibration)
 
-    value = (t1 - t0) * (t - t0_out) / (t1_out - t0_out) + t0
+    temp = (t1 - t0) * (t - t0_out) / (t1_out - t0_out) + t0
     scale = Keyword.get(opts, :scale)
 
-    {:reply, calc_temp(value, scale), state}
+    {:reply, calc_temp(temp, scale), state}
   end
 
   def handle_call(
         :humidity,
         _from,
         %{
-          h0_rh_x2: h0_rh_x2,
-          h1_rh_x2: h1_rh_x2,
-          h0_t0_out: h0_t0_out,
-          h1_t0_out: h1_t0_out,
-          bus: bus
+          bus: bus,
+          calibration:
+            %Calibration{
+              h0_t0_out: h0_t0_out,
+              h1_t0_out: h1_t0_out
+            } = calibration
         } = state
       ) do
     {:ok, <<h::signed-integer-little-size(2)-unit(8)>>} =
       I2C.write_read(bus, 0x5F, <<0x28 ||| 0x80>>, 2)
 
-    h0 = h0_rh_x2 / 2
-    h1 = h1_rh_x2 / 2
+    h0 = Calibration.h0(calibration)
+    h1 = Calibration.h1(calibration)
 
     humidity = (h1 - h0) * (h - h0_t0_out) / (h1_t0_out - h0_t0_out) + h0
 

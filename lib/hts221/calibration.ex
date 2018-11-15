@@ -1,4 +1,6 @@
 defmodule HTS221.Calibration do
+  import Bitwise
+
   defstruct [
     :t0_degc_x8,
     :t1_degc_x8,
@@ -36,4 +38,20 @@ defmodule HTS221.Calibration do
   end
 
   def from_binary(_), do: {:error, :invalid_binary}
+
+  def t0(%__MODULE__{t0_msb: t0_msb, t0_degc_x8: t0_degc_x8}) do
+    ((t0_msb <<< 8) + t0_degc_x8) / 8
+  end
+
+  def t1(%__MODULE__{t1_msb: t1_msb, t1_degc_x8: t1_degc_x8}) do
+    ((t1_msb <<< 8) + t1_degc_x8) / 8
+  end
+
+  def h0(%__MODULE__{h0_rh_x2: h0_rh_x2}) do
+    h0_rh_x2 / 2
+  end
+
+  def h1(%__MODULE__{h1_rh_x2: h1_rh_x2}) do
+    h1_rh_x2 / 2
+  end
 end
