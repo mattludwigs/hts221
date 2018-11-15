@@ -1,12 +1,13 @@
 # HTS221
 
-An Elixir library for working the HTS221 sensor via the I2C protocol. This sensor reports relative humidity
+An Elixir library for working with the HTS221 sensor via the I2C protocol. This sensor reports relative humidity
 and temperature.
+
+For more information about the HTS221 sensor please see the resources section below.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `hts221` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `hts221` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
