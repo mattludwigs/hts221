@@ -33,7 +33,7 @@ defmodule HTS221.MixProject do
     [
       maintainers: ["Matt Ludwigs"],
       licenses: ["Apache-2.0"],
-      links: %{"GitHub" => "https://github.com/mattludwigs/hts221"},
+      links: %{"GitHub" => "https://github.com/mattludwigs/hts221"}
     ]
   end
 end

@@ -14,12 +14,12 @@ defmodule HTS221 do
 
   @type temperature_opt :: {:scale, scale}
 
-  @spec start_link(binary, GenServer.options) :: GenServer.on_start()
+  @spec start_link(binary, GenServer.options()) :: GenServer.on_start()
   def start_link(bus_name, opts \\ []) do
     GenServer.start_link(__MODULE__, bus_name, opts)
   end
 
-  @spec start(binary, GenServer.options) :: GenServer.on_start()
+  @spec start(binary, GenServer.options()) :: GenServer.on_start()
   def start(bus_name, opts \\ []) do
     GenServer.start(__MODULE__, bus_name, opts)
   end
@@ -62,6 +62,10 @@ defmodule HTS221 do
     GenServer.call(hts221, {:write_register, register, data})
   end
 
+  def close(hts221) do
+    GenServer.stop(hts221)
+  end
+
   def init(bus) do
     with {:ok, bus} <- I2C.open(bus),
          :ok <- I2C.write(bus, 0x5F, <<0x20, 0x85>>),
@@ -87,7 +91,7 @@ defmodule HTS221 do
           calibration:
             %Calibration{
               t0_out: t0_out,
-              t1_out: t1_out,
+              t1_out: t1_out
             } = calibration
         } = state
       ) do
@@ -132,6 +136,10 @@ defmodule HTS221 do
 
   def handle_call({:write_register, register, data}, _from, %{bus: bus} = state) do
     {:reply, I2C.write(bus, 0x5F, <<register>> <> data), state}
+  end
+
+  def terminate(:normal, %{bus: bus}) do
+    I2C.close(bus)
   end
 
   defp calc_temp(temp, :celsius), do: temp
