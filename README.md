@@ -45,6 +45,18 @@ iex> HTS221.temperature(hts221, scale: :fahrenheit)
 
 ## Resources 
 
- - [HTS221 datasheet](https://www.st.com/resource/en/datasheet/hts221.pdf)
- - [Interpreting humidity and temperature readings](https://www.st.com/resource/en/technical_note/dm00208001.pdf)
+### Docs
+
+- [HTS221 datasheet](https://www.st.com/resource/en/datasheet/hts221.pdf)
+- [Interpreting humidity and temperature readings](https://www.st.com/resource/en/technical_note/dm00208001.pdf)
+
+
+### Recommended Hardware
+
+The hardware below is what I have used to develop, however this should would with
+any supported hardware that [Nerves](https://hexdocs.pm/nerves/targets.html#supported-targets-and-systems) supports.
+
+- [PMOD HTS221](https://store.alliedcomponentworks.com/collections/open-hardware/products/pmod-humidity-and-temperature-stmicroelectronics-hts221)
+- [Raspberry PI PMOD Hat](https://store.alliedcomponentworks.com/collections/open-hardware/products/pmod-adapter-for-raspberry-pi-3)
+- [Raspberry PI zero](https://www.adafruit.com/product/3708)
 
