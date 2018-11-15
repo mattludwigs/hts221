@@ -19,21 +19,39 @@ defmodule HTS221 do
     GenServer.start(__MODULE__, bus_name, opts)
   end
 
+  @doc """
+  Get the temperature from the sensor
+
+  Options:
+
+    * `:scale` - the reading scale either `:celsius`, `:fahrenheit`, or `:kelvin` (default `:celsius`)
+  """
   @spec temperature(t, [temperature_opt]) :: integer
   def temperature(hts221, opts \\ [scale: :celsius]) do
     GenServer.call(hts221, {:temperature, opts})
   end
 
+  @doc """
+  Get the relative humidity percentage from the sensor
+  """
   @spec humidity(t) :: integer
   def humidity(hts221) do
     GenServer.call(hts221, :humidity)
   end
 
+  @doc """
+  Read a register from the sensor. Takes a sensor pid, the register byte, and the number of bytes to read
+  """
   @spec read_register(t, byte, pos_integer) :: {:ok, binary} | {:error, reason :: any}
   def read_register(hts221, register, bytes) do
     GenServer.call(hts221, {:read_register, register, bytes})
   end
 
+  @doc """
+  Write to a register.
+
+  Takes a hts221 pid, a register byte, and the data to be written to that register
+  """
   @spec write_register(t, byte, binary) :: :ok
   def write_register(hts221, register, data) do
     GenServer.call(hts221, {:write_register, register, data})
@@ -41,7 +59,7 @@ defmodule HTS221 do
 
   def init(bus) do
     with {:ok, bus} <- I2C.open(bus),
-         :ok <- I2C.write(bust, 0x5F, <<0x20, 0x85>>),
+         :ok <- I2C.write(bus, 0x5F, <<0x20, 0x85>>),
          :ok <- I2C.write(bus, 0x5F, <<0x10, 0x1B>>),
          {:ok, calibration} <- I2C.write_read(bus, 0x5F, <<0x30 ||| 0x80>>, 16),
          {:ok, %Calibration{} = calibration} <- Calibration.from_binary(calibration) do
