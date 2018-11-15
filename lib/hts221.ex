@@ -4,6 +4,7 @@ defmodule HTS221 do
   """
   use GenServer
 
+  import Bitwise
   alias HTS221.Calibration
   alias Circuits.I2C
 
