@@ -1,9 +1,11 @@
 defmodule HTS221 do
+  @moduledoc """
+  Module for connecting, reading, and writing to the HTS221 sensor.
+  """
   use GenServer
 
-  import Bitwise
-  alias Circuits.I2C
   alias HTS221.Calibration
+  alias Circuits.I2C
 
   @type t :: pid
 
@@ -11,10 +13,12 @@ defmodule HTS221 do
 
   @type temperature_opt :: {:scale, scale}
 
+  @spec start_link(binary, GenServer.options) :: GenServer.on_start()
   def start_link(bus_name, opts \\ []) do
     GenServer.start_link(__MODULE__, bus_name, opts)
   end
 
+  @spec start(binary, GenServer.options) :: GenServer.on_start()
   def start(bus_name, opts \\ []) do
     GenServer.start(__MODULE__, bus_name, opts)
   end
