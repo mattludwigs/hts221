@@ -4,7 +4,7 @@ defmodule HTS221.MixProject do
   def project do
     [
       app: :hts221,
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -26,7 +26,7 @@ defmodule HTS221.MixProject do
     [
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev], runtime: false},
-      {:circuits_i2c, "~> 0.1.0"}
+      {:circuits_i2c, "~> 0.3.3"}
     ]
   end
 

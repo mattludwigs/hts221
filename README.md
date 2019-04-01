@@ -14,7 +14,7 @@ The package can be installed by adding `hts221` to your list of dependencies in 
 ```elixir
 def deps do
   [
-    {:hts221, "~> 0.1.0"}
+    {:hts221, "~> 0.1.1"}
   ]
 end
 ```
