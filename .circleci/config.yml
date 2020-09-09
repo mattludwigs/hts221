@@ -22,18 +22,54 @@ install_system_deps: &install_system_deps
       apt update
       apt install -y unzip
 
+ssh: &ssh
+  add_ssh_keys:
+    fingerprints:
+      - "d9:ca:ca:78:2e:26:4a:df:67:5f:a2:e9:c7:4e:f5:73"
+
+
 defaults: &defaults
   working_directory: ~/repo
 
 jobs:
-  build:
+  build_elixir_1_10_otp_23:
     docker:
-      - image: erlang:21.0.9
+      - image: erlang:23.0.2
     environment:
-          ELIXIR_VERSION: 1.7.3-otp-21
+          ELIXIR_VERSION: 1.10.4-otp-23
           LC_ALL: C.UTF-8
     <<: *defaults
     steps:
+      - <<: *ssh
+      - checkout
+      - <<: *install_system_deps
+      - <<: *install_elixir
+      - <<: *install_hex_rebar
+      - restore_cache:
+          keys:
+            - v1-mix-cache-{{ checksum "mix.lock" }}
+      - run: mix deps.get
+      - run: mix compile --warnings-as-errors
+      - run: mix format --check-formatted
+      - run: mix docs
+      - run: mix hex.build
+      - run: mix test
+      - run: mix dialyzer --halt-exit-status
+      - save_cache:
+          key: v1-mix-cache-{{ checksum "mix.lock" }}
+          paths:
+            - _build
+            - deps
+
+  build_elixir_1_10_otp_22:
+    docker:
+      - image: erlang:22.3.4.1
+    environment:
+          ELIXIR_VERSION: 1.10.3-otp-22
+          LC_ALL: C.UTF-8
+    <<: *defaults
+    steps:
+      - <<: *ssh
       - checkout
       - <<: *install_system_deps
       - <<: *install_elixir
@@ -41,14 +77,65 @@ jobs:
       - run: mix deps.get
       - run: mix compile --warnings-as-errors
       - run: mix test
-      - run: mix format --check-formatted
-      - run: mix docs
-      - run: mix hex.build
-      - run: mix dialyzer --halt-exit-status
-      - save_cache:
-          key: v1-dependency-cache-{{ checksum "mix.lock" }}
-          paths:
-            - _build
-            - deps
 
+  build_elixir_1_9_otp_22:
+    docker:
+      - image: erlang:22.3.4.1
+    environment:
+          ELIXIR_VERSION: 1.9.4-otp-22
+          LC_ALL: C.UTF-8
+    <<: *defaults
+    steps:
+      - <<: *ssh
+      - checkout
+      - <<: *install_system_deps
+      - <<: *install_elixir
+      - <<: *install_hex_rebar
+      - run: mix deps.get
+      - run: mix compile --warnings-as-errors
+      - run: mix test
+
+  build_elixir_1_8_otp_22:
+    docker:
+      - image: erlang:22.0
+    environment:
+          ELIXIR_VERSION: 1.8.2-otp-22
+          LC_ALL: C.UTF-8
+    <<: *defaults
+    steps:
+      - <<: *ssh
+      - checkout
+      - <<: *install_system_deps
+      - <<: *install_elixir
+      - <<: *install_hex_rebar
+      - run: mix deps.get
+      - run: mix compile --warnings-as-errors
+      - run: mix test
+
+  build_elixir_1_7_otp_21:
+    docker:
+      - image: erlang:21.3
+    environment:
+          ELIXIR_VERSION: 1.7.4-otp-21
+          LC_ALL: C.UTF-8
+    <<: *defaults
+    steps:
+      - <<: *ssh
+      - checkout
+      - <<: *install_system_deps
+      - <<: *install_elixir
+      - <<: *install_hex_rebar
+      - run: mix deps.get
+      - run: mix compile --warnings-as-errors
+      - run: mix test
+
+workflows:
+  version: 2
+  build_test:
+    jobs:
+      - build_elixir_1_10_otp_23
+      - build_elixir_1_10_otp_22
+      - build_elixir_1_9_otp_22
+      - build_elixir_1_8_otp_22
+      - build_elixir_1_7_otp_21
 
