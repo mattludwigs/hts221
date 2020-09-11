@@ -11,9 +11,10 @@ defmodule HTS221.MixProject do
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      docs: [extras: ["README.md"], main: "readme"],
+      docs: docs(),
       package: package(),
       dialyzer: dialyzer(),
+      elixirc_paths: elixirc_paths(Mix.env()),
       docs: docs(),
       description: description(),
       preferred_cli_env: [docs: :docs, "hex.publish": :docs]
@@ -27,7 +28,6 @@ defmodule HTS221.MixProject do
     ]
   end
 
-  # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
       {:ex_doc, "~> 0.22", only: :docs, runtime: false},
@@ -50,9 +50,13 @@ defmodule HTS221.MixProject do
 
   defp dialyzer() do
     [
-      flags: [:race_conditions, :unmatched_returns, :error_handling, :underspecs]
+      flags: [:race_conditions, :unmatched_returns, :error_handling]
     ]
   end
+
+  # Specifies which paths to compile per environment.
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_), do: ["lib"]
 
   defp docs do
     [
