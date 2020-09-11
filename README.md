@@ -2,8 +2,8 @@
 
 [![CircleCI](https://circleci.com/gh/mattludwigs/hts221.svg?style=svg)](https://circleci.com/gh/mattludwigs/hts221)
 
-An Elixir library for working with the HTS221 sensor via the I2C protocol. This sensor reports relative humidity
-and temperature.
+An Elixir library for working with the HTS221 sensor. This sensor reports
+relative humidity and temperature.
 
 For more information about the HTS221 sensor please see the resources section below.
 
@@ -21,26 +21,103 @@ end
 
 ## Usage
 
-```elixir
-iex> {:ok, hts221} = HTS221.start_link("i2c-1")
-{:ok, #PID<0.1483.0>}
-iex> HTS221.temperature(hts221)
-25.68434423443
-iex> HTS221.humidity(hts221)
-34.44044343034
-```  
+### Quick Start
 
-We have to pass the I2C bus name into the `HTS221.start/2` and `HTS221.start_link/2`
-functions to connect to the HTS221. See [Elixir Circuits I2C package](https://github.com/elixir-circuits/circuits_i2c)
-for more information about using I2C with Elixir.
-
-By default the temperature is read in degrees Celsius. However, we can change the
-scale that is return by passing the `:scale` option to the `HTS221.temperature/2` function
-like:
+This is assuming the HTS221 is using I2C.
 
 ```elixir
-iex> HTS221.temperature(hts221, scale: :fahrenheit)
-77.415
+{:ok, _pid} = HTS221.Server.start_link(transport: {HTS221.Transport.I2C, [bus_name: "i2c-1"]})
+
+temp = HTS221.Server.temperature(HTS221.Server)
+
+hum  = HTS221.Server.humidity(HTS221.Server)
+```
+
+### Transports
+
+To use the HTS221 you will need to provide a module that implements the
+`HTS221.Transport` behaviour. This library provides the
+`HTS221.Transport.I2C` module if you are using the HTS221 in I2C mode.
+
+```elixir
+{:ok, transport} = HTS221.Transport.init(HTS221.Transport.I2C, bus_name: "i2c-1")
+```
+
+### Calibration
+
+The HTS221 calibration contains read-only data about the coefficients for
+calculating the temperature in celsius and the humidity in percent. These values
+are calibrated at the factory for each HTS221 sensor, so they are unique to each
+sensor. In order to calcuate the temperature and the humidity you will need to
+read the calibration and use that with the `HTS221.calculate_temperature/2` and
+`HTS221.calculate_humidity/2` functions.
+
+To read the calibration use the `HTS221.read_calibration/1` function:
+
+```elixir
+{:ok, %HTS221.Calibration{} = calibration} = HTS221.read_calibration(transport)
+```
+
+### Power Mode
+
+By default the HTS221 is in "power-down" mode, which means the sensor will not 
+any new readings. In order to enable the sensor to take new readings you can set
+the `HTS221.CTRLReg1` register to use `:active` for its power mode.
+
+```elixir
+ctrl_reg1 = %HTS221.CTRLReg1{
+  power_mode: :active
+}
+
+:ok = HTS221.write_register(transport, ctrl_reg1)
+```
+
+However, by default the sensor's output data rate (ORD) is set to `:one_shot`.
+This means that you will need to trigger a new reading via the `CTRL_REG2`. If
+you want the sensor to read without needing to trigger a new reading you can set
+the `CTRL_REG2` up like this:
+
+```elixir
+ctrl_reg1 = %HTS221.CTRLReg1{
+  power_mode: :active,
+  output_data_rate: :one_Hz
+}
+
+:ok = HTS221.write_register(transport, ctrl_reg1)
+```
+
+For best data consistency though you will want to set the `:block_data_update`
+field to `:wait_for_reading`. The recommend base `CTRL_REG1` configuration
+should look like:
+
+```elixir
+ctrl_reg1 = %HTS221.CTRLReg1{
+  power_mode: :active,
+  output_data_rate: :one_Hz,
+  block_data_update: :wait_for_reading
+}
+
+:ok = HTS221.write_register(transport, ctrl_reg1)
+```
+
+### Read and Calculate Temperature
+
+```elixir
+{:ok, %HTS221.Calibration{} = calibration} = HTS221.read_calibration(transport)
+{:ok, %HTS221.Temperature{} = temp} = HTS221.read_temperature(transport)
+
+HTS221.calculate_temperature(temp, calibration)
+
+```
+
+### Read and Calculate Humidity
+
+```elixir
+{:ok, %HTS221.Calibration{} = calibration} = HTS221.read_calibration(transport)
+{:ok, %HTS221.Humidity{} = hum} = HTS221.read_humidity(transport)
+
+HTS221.calculate_temperature(hum, calibration)
+
 ```
 
 ## Resources 
