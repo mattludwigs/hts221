@@ -29,9 +29,16 @@ defmodule HTS221.Server do
 
   If you a custom transport implementation then the `:transport` argument to
   this server will look different.
+
+  If the HTS221 is not detected this server will log that it was not found and
+  return `:ignore` on the `GenServer.init/1` callback. This is useful if your FW
+  will run on devices with different hardware attached and don't want the device
+  availability to crash your application supervisor.
   """
 
   use GenServer
+
+  require Logger
 
   alias HTS221.{CTRLReg1, CTRLReg2, Transport}
 
@@ -111,6 +118,10 @@ defmodule HTS221.Server do
          :ok = setup_ctrl_reg1(transport) do
       {:ok, %State{calibration: calibration, transport: transport}}
     else
+      {:error, :device_not_available} ->
+        Logger.info("HTS221 not detected on device")
+        :ignore
+
       error ->
         {:stop, error}
     end

@@ -224,7 +224,7 @@ defmodule HTS221 do
   values into percent.
   """
   @spec calculate_humidity(Humidity.t(), Calibration.t()) :: float()
-  def calculate_humidity(humidity, calibration) do
+  def calculate_humidity(humidity, %Calibration{} = calibration) do
     h0 = Calibration.h0(calibration)
     h1 = Calibration.h1(calibration)
     h = humidity.raw

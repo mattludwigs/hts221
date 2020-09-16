@@ -15,12 +15,16 @@ defmodule HTS221.Transport.I2C do
 
   @impl HTS221.Transport
   def init(args) do
-    with bus_name when is_binary(bus_name) <-
-           Keyword.get(args, :bus_name, {:error, :missing_bus_name}),
-         {:ok, bus} <- I2C.open(bus_name) do
-      {:ok, {__MODULE__, bus}}
-    else
-      error -> error
+    case Keyword.get(args, :bus_name) do
+      nil ->
+        {:error, :missing_bus_name}
+
+      bus_name ->
+        if device_available?(bus_name) do
+          open_bus(bus_name)
+        else
+          {:error, :device_not_available}
+        end
     end
   end
 
@@ -32,5 +36,19 @@ defmodule HTS221.Transport.I2C do
   @impl HTS221.Transport
   def write_register(bus, binary) do
     I2C.write(bus, @address, binary)
+  end
+
+  defp device_available?(bus_name) do
+    Enum.member?(I2C.detect_devices(bus_name), @address)
+  end
+
+  defp open_bus(bus_name) do
+    case I2C.open(bus_name) do
+      {:ok, bus} ->
+        {:ok, {__MODULE__, bus}}
+
+      error ->
+        error
+    end
   end
 end
