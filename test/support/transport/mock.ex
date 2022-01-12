@@ -1,4 +1,8 @@
 defmodule HTS221Test.Transport.Mock do
+  @moduledoc false
+
+  # Testing transport
+
   @behaviour HTS221.Transport
 
   @impl HTS221.Transport

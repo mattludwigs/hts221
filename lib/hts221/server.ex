@@ -115,7 +115,7 @@ defmodule HTS221.Server do
     with {:ok, transport} <- Transport.init(transport_impl, transport_args),
          :ok = reboot_registers(transport),
          {:ok, calibration} <- HTS221.read_calibration(transport),
-         :ok = setup_ctrl_reg1(transport) do
+         :ok <- setup_ctrl_reg1(transport) do
       {:ok, %State{calibration: calibration, transport: transport}}
     else
       {:error, :device_not_available} ->
