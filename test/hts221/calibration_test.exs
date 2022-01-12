@@ -14,7 +14,7 @@ defmodule HTS221.Calibration.Test do
       t1_msb: 1,
       t0_msb: 0,
       h0_t0_out: -18,
-      h1_t0_out: -13883,
+      h1_t0_out: -13_883,
       t0_out: -2,
       t1_out: 691
     }

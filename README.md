@@ -14,7 +14,7 @@ The package can be installed by adding `hts221` to your list of dependencies in 
 ```elixir
 def deps do
   [
-    {:hts221, "~> 0.2.1"}
+    {:hts221, "~> 1.0"}
   ]
 end
 ```
@@ -60,7 +60,7 @@ To read the calibration use the `HTS221.read_calibration/1` function:
 
 ### Power Mode
 
-By default the HTS221 is in "power-down" mode, which means the sensor will not 
+By default the HTS221 is in "power-down" mode, which means the sensor will not
 any new readings. In order to enable the sensor to take new readings you can set
 the `HTS221.CTRLReg1` register to use `:active` for its power mode.
 
@@ -120,7 +120,7 @@ HTS221.calculate_temperature(hum, calibration)
 
 ```
 
-## Resources 
+## Resources
 
 ### Docs
 

@@ -1,14 +1,14 @@
 defmodule HTS221.MixProject do
   use Mix.Project
 
-  @version "0.2.1"
+  @version "1.0.0"
   @source_url "https://github.com/mattludwigs/hts221"
 
   def project do
     [
       app: :hts221,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
@@ -31,8 +31,9 @@ defmodule HTS221.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.22", only: :docs, runtime: false},
-      {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false},
-      {:circuits_i2c, "~> 1.0"}
+      {:dialyxir, "~> 1.1.0", only: [:dev], runtime: false},
+      {:circuits_i2c, "~> 1.0"},
+      {:credo, "~> 1.6", only: [:dev, :test], runtime: false}
     ]
   end
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.1 [2022-1-12]
+
+- Bump to `1.0.0` and bump dependencies to latest.
+- Drop support for Elixir < 1.11
+
 ## v0.2.1 [2020-9-16]
 
 ### Changed

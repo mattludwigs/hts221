@@ -10,7 +10,7 @@ defmodule HTS221.Temperature do
   @type t() :: %__MODULE__{
           temp_out_l: byte(),
           temp_out_h: byte(),
-          raw: 0..65535
+          raw: 0..65_535
         }
 
   defstruct temp_out_l: nil, temp_out_h: nil, raw: nil

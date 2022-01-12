@@ -7,9 +7,9 @@ defmodule HTS221.CTRLReg1 do
 
   @power_mode_active 0x80
   @wait_for_reading 0x04
-  @one_Hz 0x01
-  @seven_Hz 0x02
-  @twelve_point_five_Hz 0x03
+  @one_hz 0x01
+  @seven_hz 0x02
+  @twelve_point_five_hz 0x03
 
   @type power_mode() :: :down | :active
 
@@ -68,11 +68,11 @@ defmodule HTS221.CTRLReg1 do
 
   defp mask_with_field(int, :power_mode, :active), do: int ||| @power_mode_active
   defp mask_with_field(int, :block_data_update, :wait_for_reading), do: int ||| @wait_for_reading
-  defp mask_with_field(int, :output_data_rate, :one_Hz), do: int ||| @one_Hz
-  defp mask_with_field(int, :output_data_rate, :seven_Hz), do: int ||| @seven_Hz
+  defp mask_with_field(int, :output_data_rate, :one_Hz), do: int ||| @one_hz
+  defp mask_with_field(int, :output_data_rate, :seven_Hz), do: int ||| @seven_hz
 
   defp mask_with_field(int, :output_data_rate, :twelve_point_5_Hz),
-    do: int ||| @twelve_point_five_Hz
+    do: int ||| @twelve_point_five_hz
 
   defp mask_with_field(int, _, field) when field in [:down, :continuous, :one_shot], do: int
 
