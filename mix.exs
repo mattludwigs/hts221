@@ -32,7 +32,7 @@ defmodule HTS221.MixProject do
     [
       {:ex_doc, "~> 0.22", only: :docs, runtime: false},
       {:dialyxir, "~> 1.0.0", only: [:dev], runtime: false},
-      {:circuits_i2c, "~> 0.3.6"}
+      {:circuits_i2c, "~> 1.0"}
     ]
   end
 
