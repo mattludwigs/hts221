@@ -1,6 +1,6 @@
 # HTS221
 
-[![CircleCI](https://circleci.com/gh/mattludwigs/hts221.svg?style=svg)](https://circleci.com/gh/mattludwigs/hts221)
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/4b68RmtTppmZ5NXgHSHtc3/Njk6Cr4yP1M1xLSzoLnLpE/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/4b68RmtTppmZ5NXgHSHtc3/Njk6Cr4yP1M1xLSzoLnLpE/tree/main)
 
 An Elixir library for working with the HTS221 sensor. This sensor reports
 relative humidity and temperature.
