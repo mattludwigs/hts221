@@ -51,7 +51,7 @@ defmodule HTS221.MixProject do
 
   defp dialyzer() do
     [
-      flags: [:race_conditions, :unmatched_returns, :error_handling]
+      flags: [:unmatched_returns, :error_handling]
     ]
   end
 
