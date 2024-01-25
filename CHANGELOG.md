@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.1.0 [2024-1-24]
+
+- Loosen dependency requirements to allow for circuits_i2c v2
+
 ## v1.0.1 [2022-1-12]
 
 - Bump to `1.0.0` and bump dependencies to latest.
